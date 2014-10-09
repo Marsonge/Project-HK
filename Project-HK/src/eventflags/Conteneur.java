@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author lucie la belle gosse
+ * @author lucie la patate
  * @param <Flag>
  */
 public class Conteneur<Flag extends java.io.Serializable> {
