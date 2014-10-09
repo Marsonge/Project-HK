@@ -39,17 +39,22 @@ public class Main {
     }
     private Character randomFromPool(ArrayList<Integer> chosen,CharConteneur co)
     {
-        Character ch;
-        int i;
-        Random rand = new Random();
-        do
+        if(co.nbElements() > chosen.size())
         {
-            i = rand.nextInt(co.nbElements()+1);
-            
-        } while(this.belongs(i,chosen));
-        ch = (Character) co.obtenir(i);
-        chosen.add(i);
-        return ch;
+            Character ch;
+            int i;
+            Random rand = new Random();
+            do
+            {
+                i = rand.nextInt(co.nbElements()+1);
+
+            } while(this.belongs(i,chosen));
+            ch = (Character) co.obtenir(i);
+            chosen.add(i);
+            return ch;
+        }
+        else
+            return null;
     }
     private boolean belongs(int i,ArrayList<Integer>  chosen)
     {
