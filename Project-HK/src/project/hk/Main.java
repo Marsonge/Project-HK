@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package project.hk;
+package project.hk; 
 import characters.CharConteneur;
 import eventflags.Conteneur;
 import characters.Character;
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.lwjgl.LWJGLException;
 /**
  *
  * @author Tim
