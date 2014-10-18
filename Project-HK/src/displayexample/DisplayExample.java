@@ -65,6 +65,7 @@ public class DisplayExample {
             if (Mouse.isButtonDown(0)) {
 
                 x = (float)Mouse.getX();
+                
 
                 y = (float)Mouse.getY();
                    box = new Box2D(x, y, 25.0f);
