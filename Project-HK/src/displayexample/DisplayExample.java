@@ -10,8 +10,6 @@ package displayexample;
  * @author Fabien
  */
 import displayexample.Entities.Box2D;
-import displayexample.Entities.Entity2D;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -23,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 public class DisplayExample {
         float x;
         float y;
-        Entity2D box;
+        Box2D box;
 	public void start() {
 		x=15;
                 y=15;
@@ -62,17 +60,27 @@ public class DisplayExample {
 	}
         
         public void pollInput(){
+            /*
+            Prend en compte lorsqu'on presse une touche ou le clic gauche/droit souris
+            
+            */
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_Q)||Keyboard.isKeyDown(Keyboard.KEY_LEFT)) box.setX(box.getX()-2);
+            if(Keyboard.isKeyDown(Keyboard.KEY_D)||Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) box.setX(box.getX()+2);
+            if(Keyboard.isKeyDown(Keyboard.KEY_Z)||Keyboard.isKeyDown(Keyboard.KEY_UP)) box.setY(box.getY()+2);
+            if(Keyboard.isKeyDown(Keyboard.KEY_S)||Keyboard.isKeyDown(Keyboard.KEY_DOWN)) box.setY(box.getY()-2);
             if (Mouse.isButtonDown(0)) {
-
                 x = (float)Mouse.getX();
-                
-
                 y = (float)Mouse.getY();
-                   box = new Box2D(x, y, 25.0f);
-                   box.setUp();
-                   box.draw();
+                   //box.setLocation(x,y);
+                   box.changeSize(2.00f);
+                   //box.setUp();
                 System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
-        }
+            }
+            if(Mouse.isButtonDown(1)){
+                box.changeSize(-2.00f);
+                   //box.setUp();
+            }
             
         }
 	

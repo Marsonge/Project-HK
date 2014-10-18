@@ -48,4 +48,9 @@ public class Box2D extends AbstractEntity2D {
 		GL11.glVertex2f(x,y+size);
 	    GL11.glEnd();
 	}
+        
+    public void changeSize(float x) {
+       this.size+=x;
+    }
 }
+

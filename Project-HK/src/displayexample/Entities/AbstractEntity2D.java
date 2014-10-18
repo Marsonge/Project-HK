@@ -20,6 +20,7 @@ public abstract class AbstractEntity2D implements Entity2D {
     		this.x = x;
     		this.y = y;
         }
+       
 	public abstract void setUp();
 	public abstract void destroy();
 	public abstract void draw();

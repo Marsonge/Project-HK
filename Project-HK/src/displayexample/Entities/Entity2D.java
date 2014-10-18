@@ -15,6 +15,7 @@ public interface Entity2D {
         public void setX(float x);
         public void setY(float y);
         public void setLocation(float x, float y);
+        
 	public void setUp();
 	public void destroy();
 	public void draw();
