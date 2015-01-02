@@ -12,8 +12,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.entities.Building;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Game extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -71,15 +69,15 @@ public class Game extends ApplicationAdapter {
                     newy = Gdx.input.getY()+64/2;
                     buildlist.add(new Building(1,new Texture("jolof.png"),newx,480-newy));
                 }//Quand on clique, on fait apparaitre un batiment avec l'image de jolof!
-                if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-                    newx = Gdx.input.getX()-64/2;
-                    newy = Gdx.input.getY()+64/2;
-                    buildlist.add(new Building(1,new Texture("mamache.jpg"),newx,480-newy));
-                }
-                
                 if(jolof.x < 0) jolof.x = 0;
                 if(jolof.x > 800 - 64) jolof.x = 800 - 64;
                 if(jolof.y < 0) jolof.y = 0;
                 if(jolof.y > 480 - 64) jolof.y = 480 - 64;
+                if(jolof.x > jolof1.x) {
+                    jolof.x = jolof1.x+64;
+                }
+                if(jolof.x < jolof1.x) {
+                    jolof.x = jolof1.x-64;
+                }
 	}
 }
