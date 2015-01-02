@@ -5,6 +5,7 @@
  */
 package com.mygdx.game;
 
+import com.mygdx.game.TiledMap.TiledMapStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 /**
@@ -27,9 +29,9 @@ public class GameScreen implements Screen{
     MyGame game;
     SpriteBatch batch;
     private BitmapFont font;
+    Stage stage;
     
     public GameScreen(MyGame game){
-        // load tilemap
         this.game=game;
         
     }
@@ -37,14 +39,18 @@ public class GameScreen implements Screen{
 
     @Override
     public void render(float f) {
-         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    tiledMapRenderer.render();
-    camera.update();
-    tiledMapRenderer.setView(camera);
-    batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-		batch.end();
+        
+        camera.update();
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
+        batch.begin();
+        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        stage.act();
+        batch.end();
+        
     }
 
     @Override
@@ -54,12 +60,18 @@ public class GameScreen implements Screen{
     @Override
     public void show() {
         map = new TmxMapLoader().load("map.tmx");
-        //atlas = new TileAtlas(map, Gdx.files.internal("maps"));
+        
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-        // handles rendering the tile map. 8x8 is the chunk size to preload
-        camera=new OrthographicCamera(800,480);
+        
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
         batch = new SpriteBatch();
         font = new BitmapFont();
+        stage = new TiledMapStage(map);
+        Gdx.input.setInputProcessor(stage);
         
     }
 
@@ -77,6 +89,7 @@ public class GameScreen implements Screen{
 
     @Override
     public void dispose() {
+        map.dispose();
     }
 
     
