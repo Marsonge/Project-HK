@@ -8,6 +8,9 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -21,8 +24,12 @@ public class MenuScreen implements Screen {
 
        MyGame game;
        Skin skin;
-       TextField textMenu;
+       Texture backgroundTexture;
+       Sprite backgroundSprite;
+       SpriteBatch spriteBatch;
        TextButton gameButton;
+       TextButton optionButton;
+       TextButton creditButton;
        TextButton quitButton;
        Table table;
        Stage stage;
@@ -32,6 +39,11 @@ public class MenuScreen implements Screen {
         public MenuScreen(final MyGame game){
                 //on garde une trace de game
                 this.game = game;
+                
+                //choix du background
+                backgroundTexture = new Texture("menuBackground.jpg");
+                backgroundSprite =new Sprite(backgroundTexture);
+                spriteBatch = new SpriteBatch();
                 
                 //changer de skin ici
                 skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
@@ -43,19 +55,23 @@ public class MenuScreen implements Screen {
                 table.setSize(800,480);
                 
                 //definition des elements
-                textMenu=new TextField("Project HK",skin);
                 gameButton=new TextButton("Play",skin);
+                optionButton=new TextButton("Options",skin);
+                creditButton=new TextButton("Credit",skin);
                 quitButton=new TextButton("Quit",skin);
                 
                 
                 //ajout des elements au table
-                table.add(textMenu).width(200).height(50).padTop(10);
+                table.add(gameButton).width(200).height(40);
                 table.row();
                 
-                table.add(gameButton).width(200).height(50).padTop(10);;
+                table.add(optionButton).width(200).height(40).padTop(5);
                 table.row();
                 
-                table.add(quitButton).width(200).height(50).padTop(10);;
+                table.add(creditButton).width(200).height(40).padTop(5);
+                table.row();
+                
+                table.add(quitButton).width(200).height(40).padTop(5);
                 table.row();
                 
                 // ATTENTION METTRE LES LISTENER APRES CETTE METHODE SINON CA FAIT DE LA MERDE
@@ -69,6 +85,20 @@ public class MenuScreen implements Screen {
                     }
                 });
                 
+                optionButton.addListener(new ClickListener(){
+                    @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                        //game.setScreen(game.optionscreen);
+                    }
+                });
+                
+                creditButton.addListener(new ClickListener(){
+                    @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                        //game.setScreen(game.creditscreen);
+                    }
+                });
+                
                  quitButton.addListener(new ClickListener(){
                     @Override
                         public void clicked(InputEvent event, float x, float y) {
@@ -79,8 +109,16 @@ public class MenuScreen implements Screen {
         }
 
 
+        public void renderBG()
+        {
+            spriteBatch.begin();
+                backgroundSprite.draw(spriteBatch);
+            spriteBatch.end();
+        }
+        
         @Override
         public void render(float delta) {
+            renderBG();
             stage.act(delta);
             stage.draw();
         }
