@@ -51,7 +51,7 @@ public class TiledMapClickListener extends ClickListener {
      */
     @Override
     public void clicked(InputEvent event, float x, float y) {
-        System.out.println(actor.cell + " has been clicked.");
+        Gdx.app.log("Cellule cliquée",actor.cell + " has been clicked.");
         
         if(actor.isEmpty()){
             //On reset le son si besoin puis on le joue
@@ -81,7 +81,7 @@ public class TiledMapClickListener extends ClickListener {
         actor.stage.activetile=actor;
         x= (int)actor.getX();
         y = (int)actor.getY();
-        System.out.println("x="+x+" y="+y);
+        Gdx.app.log("Coord mouseover","x="+x+" y="+y);
         
         
     }
