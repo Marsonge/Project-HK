@@ -25,6 +25,7 @@ public class TiledMapClickListener extends ClickListener {
     private int x;
     private int y;
     private Cell newcell;
+    
     public TiledMapClickListener(TiledMapActor actor) {
         this.actor = actor;
     }
@@ -44,6 +45,19 @@ public class TiledMapClickListener extends ClickListener {
             
         }
     }
+
+    @Override
+    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+        actor.stage.activetile=actor;
+        x= (int)actor.getX();
+            y = (int)actor.getY();
+            System.out.println("x="+x+" y="+y);
+        
+        
+    }
+    
+    
+    
 
     
 }

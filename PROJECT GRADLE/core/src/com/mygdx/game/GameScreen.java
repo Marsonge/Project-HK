@@ -8,6 +8,7 @@ package com.mygdx.game;
 import com.mygdx.game.TiledMap.TiledMapStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,6 +31,7 @@ public class GameScreen implements Screen{
     SpriteBatch batch;
     private BitmapFont font;
     Stage stage;
+    Music ambiance;
     
     public GameScreen(MyGame game){
         this.game=game;
@@ -48,17 +50,28 @@ public class GameScreen implements Screen{
         tiledMapRenderer.render();
         batch.begin();
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-        stage.act();
         batch.end();
+        stage.act(f);
+        stage.draw();
         
     }
 
     @Override
     public void resize(int i, int i1) {
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+        
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
     }
 
     @Override
     public void show() {
+        ambiance = Gdx.audio.newMusic(Gdx.files.internal("sound/dayambiance.mp3"));
+        
+        ambiance.setLooping(true);
+        ambiance.play();
+        ambiance.setVolume(0.1f);
+        
         map = new TmxMapLoader().load("map.tmx");
         
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -66,7 +79,7 @@ public class GameScreen implements Screen{
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
-        camera = new OrthographicCamera();
+        camera = new OrthographicCamera(w,h);
         camera.setToOrtho(false);
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -77,6 +90,7 @@ public class GameScreen implements Screen{
 
     @Override
     public void hide() {
+        ambiance.dispose();
     }
 
     @Override
@@ -90,6 +104,7 @@ public class GameScreen implements Screen{
     @Override
     public void dispose() {
         map.dispose();
+        ambiance.dispose();
     }
 
     

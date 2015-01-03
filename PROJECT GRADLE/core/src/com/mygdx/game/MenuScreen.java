@@ -8,9 +8,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -33,12 +36,19 @@ public class MenuScreen implements Screen {
        TextButton quitButton;
        Table table;
        Stage stage;
+       Music music;
+       Music enter;
  
 
 
         public MenuScreen(final MyGame game){
                 //on garde une trace de game
                 this.game = game;
+                
+                //On lance la musique d'ambiance
+                music=Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
+                enter= Gdx.audio.newMusic(Gdx.files.internal("sound/enterbutton.mp3"));
+                
                 
                 //choix du background
                 backgroundTexture = new Texture("menuBackground.jpg");
@@ -78,33 +88,39 @@ public class MenuScreen implements Screen {
                 stage.addActor(table);
                 
                 //ajout des listeners
-                gameButton.addListener(new ClickListener(){
+                gameButton.addListener(new MenuScreenClickListener(){
                     @Override
                         public void clicked(InputEvent event, float x, float y) {
+                        enter.play();
                         game.setScreen(game.gamescreen);
                     }
                 });
                 
-                optionButton.addListener(new ClickListener(){
+                optionButton.addListener(new MenuScreenClickListener(){
                     @Override
                         public void clicked(InputEvent event, float x, float y) {
                         //game.setScreen(game.optionscreen);
                     }
                 });
                 
-                creditButton.addListener(new ClickListener(){
+                creditButton.addListener(new MenuScreenClickListener(){
                     @Override
                         public void clicked(InputEvent event, float x, float y) {
                         //game.setScreen(game.creditscreen);
                     }
                 });
                 
-                 quitButton.addListener(new ClickListener(){
+                 quitButton.addListener(new MenuScreenClickListener(){
                     @Override
                         public void clicked(InputEvent event, float x, float y) {
                         System.exit(0);
                     }
+
+                    
+                    
                 });
+                 
+                
                 
         }
 
@@ -136,12 +152,17 @@ public class MenuScreen implements Screen {
        @Override
         public void show() {
              // called when this screen is set as the screen with game.setScreen();
+            music.setLooping(true);
+            music.play();
         }
 
 
        @Override
         public void hide() {
              // called when current screen changes from this to a different screen
+            
+            //On enlève cette musique d'ambiance quand on change d'écran.
+            music.dispose();
         }
 
 
@@ -158,5 +179,6 @@ public class MenuScreen implements Screen {
        @Override
         public void dispose() {
                 // never called automatically
+            music.dispose();
         }
  }
