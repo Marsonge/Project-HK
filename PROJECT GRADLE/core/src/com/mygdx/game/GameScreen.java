@@ -41,16 +41,19 @@ public class GameScreen implements Screen{
 
     @Override
     public void render(float f) {
+        //Update l'affichage
         
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        
+        //On affiche la carte
         camera.update();
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+        
+        //On écrit le nombre de fps
         batch.begin();
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
+        //On vérifie les input et on redéssine les acteurs (les cases)
         stage.act(f);
         stage.draw();
         
@@ -58,6 +61,7 @@ public class GameScreen implements Screen{
 
     @Override
     public void resize(int i, int i1) {
+        // FONCTIONNE PAAAAAAAAAS
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
         
         float w = Gdx.graphics.getWidth();
@@ -66,6 +70,7 @@ public class GameScreen implements Screen{
 
     @Override
     public void show() {
+        //On charge tout lorsque la fenetre devient la fenetre active
         ambiance = Gdx.audio.newMusic(Gdx.files.internal("sound/dayambiance.mp3"));
         
         ambiance.setLooping(true);
