@@ -1,26 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mygdx.game;
 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MenuScreen implements Screen {
 
@@ -39,7 +30,8 @@ public class MenuScreen implements Screen {
        Music music;
        Music enter;
  
-
+// /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
+ // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
         public MenuScreen(final MyGame game){
                 //on garde une trace de game
@@ -60,7 +52,6 @@ public class MenuScreen implements Screen {
                 
                 //definition du table et du stage
                 stage=new Stage();
-                Gdx.input.setInputProcessor(stage);
                 table=new Table();
                 table.setSize(800,480);
                 
@@ -115,12 +106,8 @@ public class MenuScreen implements Screen {
                         public void clicked(InputEvent event, float x, float y) {
                         System.exit(0);
                     }
-
-                    
                     
                 });
-                 
-                
                 
         }
 
@@ -139,10 +126,6 @@ public class MenuScreen implements Screen {
             stage.draw();
         }
 
-
-
-
-
        @Override
         public void resize(int width, int height) {
             
@@ -152,6 +135,7 @@ public class MenuScreen implements Screen {
        @Override
         public void show() {
              // called when this screen is set as the screen with game.setScreen();
+            Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
             music.setLooping(true);
             music.play();
         }
@@ -161,7 +145,7 @@ public class MenuScreen implements Screen {
         public void hide() {
              // called when current screen changes from this to a different screen
             
-            //On enlève cette musique d'ambiance quand on change d'écran.
+            //On enlève cette musique d'ambiance (qui fait froid dans le dos) quand on change d'écran.
             music.dispose();
         }
 

@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mygdx.game.TiledMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -56,12 +49,13 @@ public class TiledMapClickListener extends ClickListener {
         if(actor.isEmpty()){
             //On reset le son si besoin puis on le joue
             if(buildingsound.isPlaying()) buildingsound.stop();
+            
             buildingsound.play();
             x= (int)actor.getX();
             y = (int)actor.getY();
             System.out.println("x="+x+" y="+y);
             Cell newcell = new Cell();
-            //On ajoute une Tile perso à la Cell (ici avec la texture jolof...
+            //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
             newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("jolof.png"),32,32)));
             actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
             actor.cell = newcell;
