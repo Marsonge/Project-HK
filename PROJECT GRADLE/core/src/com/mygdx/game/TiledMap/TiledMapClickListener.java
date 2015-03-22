@@ -62,8 +62,10 @@ public class TiledMapClickListener extends ClickListener {
                 Cell newcell = new Cell();
                 //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
                 newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("defense.gif"),32,32)));
+                actor.batiment = "defense";
                 actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
                 actor.cell = newcell;
+                
 
             }
         } else if(this.getPressedButton() == Input.Buttons.RIGHT){
@@ -79,6 +81,8 @@ public class TiledMapClickListener extends ClickListener {
                 Cell newcell = new Cell();
                 //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
                 newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("food.bmp"),32,32)));
+                actor.batiment = "food";
+                actor.stage.gamescreen.addFoodPerSecond(0.2);
                 actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
                 actor.cell = newcell;
 

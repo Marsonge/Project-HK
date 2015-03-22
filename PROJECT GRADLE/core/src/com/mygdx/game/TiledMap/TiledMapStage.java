@@ -1,5 +1,6 @@
 package com.mygdx.game.TiledMap;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mygdx.game.GameScreen;
 
 /**
  *  
@@ -20,10 +22,12 @@ public class TiledMapStage extends Stage {
     TiledMapActor activetile;
     SpriteBatch batch;
     ShapeRenderer shape;
+    GameScreen gamescreen;
 
-    public TiledMapStage(TiledMap tiledMap) {
+    public TiledMapStage(TiledMap tiledMap, GameScreen gamescreen) {
         //On le lie à la TiledMap
         this.tiledMap = tiledMap;
+        this.gamescreen = gamescreen;
         
         //Le ShapeRenderer pour déssiner les cadres
         shape = new ShapeRenderer();
@@ -64,6 +68,4 @@ public class TiledMapStage extends Stage {
             shape.end();
         }
     }
-    
-    
 }

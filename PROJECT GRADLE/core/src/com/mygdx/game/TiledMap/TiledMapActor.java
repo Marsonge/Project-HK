@@ -15,16 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class TiledMapActor extends Actor {
 
     private TiledMap tiledMap;
-
     TiledMapTileLayer tiledLayer;
-
     TiledMapTileLayer.Cell cell;
-    
     TiledMapStage stage;
-    
     ShapeRenderer shape;
-    
+    String batiment;
     static private boolean projectionMatrixSet;
+    
     /**
      * 
      * @param tiledMap La TileMap auquel est lié l'acteur

@@ -15,13 +15,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import static com.badlogic.gdx.utils.TimeUtils.millis;
+import static com.badlogic.gdx.utils.TimeUtils.timeSinceMillis;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 
 /**
  *
  * @author Fabien
  */
-public class GameScreen implements Screen{
+public class GameScreen implements Screen {
     TiledMap map;
     OrthogonalTiledMapRenderer tiledMapRenderer;
     OrthographicCamera camera;
@@ -37,6 +41,11 @@ public class GameScreen implements Screen{
     private State state = State.RUN; // initialisée à RUN pour que le jeu se lance bien
     Sprite spritePause; // Sprite de l'icone pause
     
+    private double food;
+    private double foodPerSecond;
+    private int defense;
+    private long currentTime;
+    private long beginTime;
     
     public GameScreen(MyGame game){
         this.game=game;
@@ -50,15 +59,24 @@ public class GameScreen implements Screen{
         
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
         
-        
-
         camera = new OrthographicCamera(w,h);
         camera.setToOrtho(false);
         batch = new SpriteBatch();
         font = new BitmapFont();
-        stage = new TiledMapStage(map);
+        stage = new TiledMapStage(map, this);
+        food = 10;
+        foodPerSecond = 0.1;
+        defense = 5;
+        beginTime = millis();
         
         batch.setProjectionMatrix(camera.combined);
+        new Timer().schedule(new Task(){
+                    @Override
+                    public void run() {
+                        addFood();
+                        System.out.println(food);
+                    }
+                }, 0, 1);
     }
 
     @Override
@@ -71,14 +89,20 @@ public class GameScreen implements Screen{
                 camera.update();
                 tiledMapRenderer.setView(camera);
                 tiledMapRenderer.render();
-
+                
+                currentTime = timeSinceMillis(beginTime);
+                //System.out.println((int)(currentTime/1000));
+                    
+                
                 //On écrit le nombre de fps
                 batch.begin();
                 font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+                font.draw(batch, "FOOD: " + (int)food, 20, Gdx.graphics.getHeight()-10);
                 batch.end();
                 //On vérifie les input et on redéssine les acteurs (les cases)
                 stage.act(f);
                 stage.draw();
+                
                 if (Gdx.input.isKeyJustPressed(Keys.SPACE)) { // Appui sur la touche espace pour mettre en pause
                     this.pause();
                 }
@@ -145,6 +169,16 @@ public class GameScreen implements Screen{
         ambiance.dispose();
     }
 
+    public void addFoodPerSecond(double quantity){
+        foodPerSecond = foodPerSecond + quantity;
+    }
     
+    public void addFood(){
+        food = food + foodPerSecond;
+    }
+    
+    public void addDefense(int quantity){
+        defense = defense + quantity;
+    }
     
 }
