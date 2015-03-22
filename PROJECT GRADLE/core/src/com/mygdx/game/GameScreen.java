@@ -44,8 +44,9 @@ public class GameScreen implements Screen {
     private double food;
     private double foodPerSecond;
     private int defense;
-    private long currentTime;
-    private long beginTime;
+    private Timer ressourceRender;
+    private Timer clock;
+    private int currentHour;
     
     public GameScreen(MyGame game){
         this.game=game;
@@ -67,16 +68,29 @@ public class GameScreen implements Screen {
         food = 10;
         foodPerSecond = 0.1;
         defense = 5;
-        beginTime = millis();
+        currentHour = 5;
         
         batch.setProjectionMatrix(camera.combined);
-        new Timer().schedule(new Task(){
+        ressourceRender = new Timer();
+        ressourceRender.schedule(new Task(){
                     @Override
                     public void run() {
                         addFood();
-                        System.out.println(food);
                     }
                 }, 0, 1);
+        ressourceRender.instance().stop();
+        
+        clock = new Timer();
+        clock.schedule(new Task(){
+            @Override
+            public void run() {
+                if(currentHour > 24){
+                    currentHour = 5;
+                }
+                currentHour = currentHour +1;
+            }
+        },0,10);
+        clock.instance().stop();
     }
 
     @Override
@@ -90,14 +104,12 @@ public class GameScreen implements Screen {
                 tiledMapRenderer.setView(camera);
                 tiledMapRenderer.render();
                 
-                currentTime = timeSinceMillis(beginTime);
-                //System.out.println((int)(currentTime/1000));
-                    
-                
                 //On écrit le nombre de fps
                 batch.begin();
                 font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+                font.draw(batch, "CLOCK: " + currentHour+"H", Gdx.graphics.getWidth()-100, Gdx.graphics.getHeight()-10);
                 font.draw(batch, "FOOD: " + (int)food, 20, Gdx.graphics.getHeight()-10);
+                font.draw(batch, "DEFENSE: " + defense, 120, Gdx.graphics.getHeight()-10);
                 batch.end();
                 //On vérifie les input et on redéssine les acteurs (les cases)
                 stage.act(f);
@@ -136,6 +148,8 @@ public class GameScreen implements Screen {
         ambiance.setLooping(true);
         ambiance.play();
         ambiance.setVolume(0.2f);
+        clock.instance().start();
+        ressourceRender.instance().start();
         
         // Déplacé les déclarations de variables dans le constructeur
         
@@ -153,6 +167,8 @@ public class GameScreen implements Screen {
         // quand on met le jeu en pause (avec barre espace) on actualise le statut et on coupe la musique
         this.state = State.PAUSE;
         ambiance.pause();
+        clock.instance().stop();
+        ressourceRender.instance().stop();
     }
 
     @Override
@@ -160,6 +176,8 @@ public class GameScreen implements Screen {
         // on fait l'inverse quand on retourne au jeu
         this.state = State.RUN;
         ambiance.play();
+        clock.instance().start();
+        ressourceRender.instance().start();
     }
     
 
@@ -169,6 +187,18 @@ public class GameScreen implements Screen {
         ambiance.dispose();
     }
 
+    public double getFood(){
+        return food;
+    }
+    
+    public double getFoodPerSecond(){
+        return foodPerSecond;
+    }
+    
+    public int getDefense(){
+        return defense;
+    }
+    
     public void addFoodPerSecond(double quantity){
         foodPerSecond = foodPerSecond + quantity;
     }
@@ -179,6 +209,18 @@ public class GameScreen implements Screen {
     
     public void addDefense(int quantity){
         defense = defense + quantity;
+    }
+    
+    public void removeFoodPerSecond(double quantity){
+        foodPerSecond = foodPerSecond - quantity;
+    }
+    
+    public void removeFood(double quantity){
+        food = food - quantity;
+    }
+    
+    public void removeDefense(int quantity){
+        defense = defense - quantity;
     }
     
 }

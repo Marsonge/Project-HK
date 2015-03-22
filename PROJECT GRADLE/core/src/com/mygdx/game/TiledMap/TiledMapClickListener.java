@@ -51,41 +51,47 @@ public class TiledMapClickListener extends ClickListener {
         
         if(this.getPressedButton() == Input.Buttons.LEFT){
             if(actor.isEmpty()){
-                //On reset le son si besoin puis on le joue
-                if(buildingsound.isPlaying()) buildingsound.stop();
+                if(actor.stage.gamescreen.getFood() > 3){
+                    //On reset le son si besoin puis on le joue
+                    if(buildingsound.isPlaying()) buildingsound.stop();
 
-                buildingsound.play();
-                x= (int)actor.getX();
-                y = (int)actor.getY();
-                System.out.println("x="+x+" y="+y);
-                System.out.println("actor =" + actor.getWidth());
-                Cell newcell = new Cell();
-                //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
-                newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("defense.gif"),32,32)));
-                actor.batiment = "defense";
-                actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
-                actor.cell = newcell;
-                
-
+                    buildingsound.play();
+                    x= (int)actor.getX();
+                    y = (int)actor.getY();
+                    System.out.println("x="+x+" y="+y);
+                    System.out.println("actor =" + actor.getWidth());
+                    Cell newcell = new Cell();
+                    //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
+                    newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("defense.gif"),32,32)));
+                    actor.stage.gamescreen.removeFood(5);
+                    actor.stage.gamescreen.addDefense(3);
+                    actor.batiment = "defense";
+                    actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
+                    actor.cell = newcell;
+                }
             }
         } else if(this.getPressedButton() == Input.Buttons.RIGHT){
             if(actor.isEmpty()){
-                //On reset le son si besoin puis on le joue
-                if(buildingsound.isPlaying()) buildingsound.stop();
+                if(actor.stage.gamescreen.getFood() > 3){
+                    //On reset le son si besoin puis on le joue
+                    if(buildingsound.isPlaying()) buildingsound.stop();
 
-                buildingsound.play();
-                x= (int)actor.getX();
-                y = (int)actor.getY();
-                System.out.println("x="+x+" y="+y);
-                System.out.println("actor =" + actor.getWidth());
-                Cell newcell = new Cell();
-                //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
-                newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("food.bmp"),32,32)));
-                actor.batiment = "food";
-                actor.stage.gamescreen.addFoodPerSecond(0.2);
-                actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
-                actor.cell = newcell;
-
+                    buildingsound.play();
+                    x= (int)actor.getX();
+                    y = (int)actor.getY();
+                    System.out.println("x="+x+" y="+y);
+                    System.out.println("actor =" + actor.getWidth());
+                    Cell newcell = new Cell();
+                    //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
+                    newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("food.bmp"),32,32)));
+                    actor.stage.gamescreen.removeFood(3);
+                    actor.stage.gamescreen.addFoodPerSecond(0.2);
+                    actor.batiment = "food";
+                    actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
+                    actor.cell = newcell;
+                } else {
+                    //afficher message 'not enough ressources !'
+                }
             }
         }
     }
