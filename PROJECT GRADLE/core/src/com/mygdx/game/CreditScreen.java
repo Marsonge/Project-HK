@@ -6,7 +6,9 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.I18NBundle;
 import java.util.Locale;
 
-public class MenuScreen implements Screen {
+public class CreditScreen implements Screen {
 
 
        private MyGame game;
@@ -33,6 +35,7 @@ public class MenuScreen implements Screen {
        private Stage stage;
        private Music music;
        private Music enter;
+       private BitmapFont font;
        private Preferences prefs;
        private FileHandle baseFileHandle;
        private I18NBundle strings;
@@ -41,21 +44,20 @@ public class MenuScreen implements Screen {
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public MenuScreen(final MyGame game){
+        public CreditScreen(final MyGame game){
                 //on garde une trace de game
                 this.game = game;
+ 
+                //choix du background
                 prefs = Gdx.app.getPreferences("userconf.prefs");
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-                //On lance la musique d'ambiance
-                music=Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
-                enter= Gdx.audio.newMusic(Gdx.files.internal("sound/enterbutton.mp3"));
-                             
-                //choix du background
                 backgroundTexture = new Texture("menuBackground.jpg");
                 backgroundSprite =new Sprite(backgroundTexture);
                 spriteBatch = new SpriteBatch();
+                font = new BitmapFont();
+                font.setColor(Color.WHITE);
                 
                 //changer de skin ici
                 skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
@@ -63,16 +65,12 @@ public class MenuScreen implements Screen {
                 //definition du table et du stage
                 stage=new Stage();
                 table=new Table();
-                table.setSize(800,480);
+                table.setSize(800,200);
                 
                 //definition des elements
-                gameButton=new TextButton(strings.get("play"),skin);
-                optionButton=new TextButton(strings.get("options"),skin);
-                creditButton=new TextButton(strings.get("credit"),skin);
-                quitButton=new TextButton(strings.get("quit"),skin);
+                quitButton=new TextButton(strings.get("back"),skin);
                 
                 this.addAllToTable();
-                
                 // ATTENTION METTRE LES LISTENER APRES CETTE METHODE SINON CA FAIT DE LA MERDE
                 stage.addActor(table);
                 
@@ -81,59 +79,19 @@ public class MenuScreen implements Screen {
         }
         public void addAllToTable()
         {
-            table.add(gameButton).width(200).height(40);
-            table.row();
-
-            table.add(optionButton).width(200).height(40).padTop(5);
-            table.row();
-
-            table.add(creditButton).width(200).height(40).padTop(5);
-            table.row();
-
             table.add(quitButton).width(200).height(40).padTop(5);
             table.row();
         }
         public void addAllButtonListener()
-        {
-            this.addGameButtonListener();
-            this.addOptionButtonListener();
-            this.addCreditButtonListener();
+        {  
             this.addQuitButtonListener();
-        }
-        public void addGameButtonListener()
-        {
-            gameButton.addListener(new MenuScreenClickListener(){
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        enter.play();
-                        game.setScreen(game.gamescreen);
-                    }
-                });
-        }
-        public void addOptionButtonListener()
-        {
-            optionButton.addListener(new MenuScreenClickListener(){
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(game.optionscreen);
-                    }
-                });
-        }
-        public void addCreditButtonListener()
-        {
-            creditButton.addListener(new MenuScreenClickListener(){
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(game.creditscreen);
-                    }
-                });
         }
         public void addQuitButtonListener()
         {
             quitButton.addListener(new MenuScreenClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.exit(0);
+                        game.setScreen(game.menuscreen);
                     }
                     
                 });
@@ -142,6 +100,9 @@ public class MenuScreen implements Screen {
         {
             spriteBatch.begin();
             backgroundSprite.draw(spriteBatch);
+            font.draw(spriteBatch, strings.get("madewithlove"), 200, 400);
+            font.draw(spriteBatch, strings.get("names"), 200, 370);
+                font.draw(spriteBatch, strings.get("projectname"), 200, 350);
             spriteBatch.end();
         }
         
@@ -162,17 +123,12 @@ public class MenuScreen implements Screen {
         public void show() {
              // called when this screen is set as the screen with game.setScreen();
             Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
-            music.setLooping(true);
-            music.play();
         }
 
 
        @Override
         public void hide() {
              // called when current screen changes from this to a different screen
-            
-            //On enlève cette musique d'ambiance (qui fait froid dans le dos) quand on change d'écran.
-            music.dispose();
         }
 
 
@@ -189,6 +145,5 @@ public class MenuScreen implements Screen {
        @Override
         public void dispose() {
                 // never called automatically
-            music.dispose();
         }
  }

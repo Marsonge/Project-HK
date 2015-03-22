@@ -3,8 +3,10 @@ package com.mygdx.game;
 import com.mygdx.game.TiledMap.TiledMapStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,10 +17,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.I18NBundle;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.badlogic.gdx.utils.TimeUtils.timeSinceMillis;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import java.util.Locale;
 
 
 /**
@@ -26,20 +30,20 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author Fabien
  */
 public class GameScreen implements Screen {
-    TiledMap map;
-    OrthogonalTiledMapRenderer tiledMapRenderer;
-    OrthographicCamera camera;
-    MyGame game;
-    SpriteBatch batch;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
+    private OrthographicCamera camera;
+    private MyGame game;
+    private SpriteBatch batch;
     private BitmapFont font;
-    Stage stage;
-    Music ambiance;
+    private Stage stage;
+    private Music ambiance;
     enum State{ // Choix possibles pour la variable state
         PAUSE,
         RUN
     };
     private State state = State.RUN; // initialisée à RUN pour que le jeu se lance bien
-    Sprite spritePause; // Sprite de l'icone pause
+    private Sprite spritePause; // Sprite de l'icone pause
     
     private double food;
     private double foodPerSecond;
@@ -47,15 +51,23 @@ public class GameScreen implements Screen {
     private Timer ressourceRender;
     private Timer clock;
     private int currentHour;
-    
+    private Preferences prefs;
+    private boolean FpsShowing;
+    private FileHandle baseFileHandle;
+    private I18NBundle strings;
+    private String language;
     public GameScreen(MyGame game){
         this.game=game;
+        prefs = Gdx.app.getPreferences("userconf.prefs");
+        baseFileHandle = Gdx.files.internal("strings");
+        language = prefs.getString("language","");
+        strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         spritePause=new Sprite(new Texture("pause.png")); // J'initialise le sprite ici avec l'image
         spritePause.setX(w/2 - spritePause.getWidth()/2);
         spritePause.setY(h/2 - spritePause.getHeight()/2);
-        
+        FpsShowing = prefs.getBoolean("fps", true);
         map = new TmxMapLoader().load("map.tmx");
         
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -106,10 +118,12 @@ public class GameScreen implements Screen {
                 
                 //On écrit le nombre de fps
                 batch.begin();
-                font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-                font.draw(batch, "CLOCK: " + currentHour+"H", Gdx.graphics.getWidth()-100, Gdx.graphics.getHeight()-10);
-                font.draw(batch, "FOOD: " + (int)food, 20, Gdx.graphics.getHeight()-10);
-                font.draw(batch, "DEFENSE: " + defense, 120, Gdx.graphics.getHeight()-10);
+                if(FpsShowing){
+                    font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+                }
+                font.draw(batch, strings.get("clock") + currentHour+"H", Gdx.graphics.getWidth()-100, Gdx.graphics.getHeight()-10);
+                font.draw(batch, strings.get("food") + (int)food, 20, Gdx.graphics.getHeight()-10);
+                font.draw(batch, strings.get("defense") + defense, 170, Gdx.graphics.getHeight()-10);
                 batch.end();
                 //On vérifie les input et on redéssine les acteurs (les cases)
                 stage.act(f);

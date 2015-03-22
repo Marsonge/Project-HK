@@ -1,5 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.mygdx.game;
-
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -17,41 +21,42 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.I18NBundle;
 import java.util.Locale;
 
-public class MenuScreen implements Screen {
-
-
+/**
+ *
+ * @author Tim
+ */
+public class OptionScreen implements Screen{
+    
        private MyGame game;
        private Skin skin;
        private Texture backgroundTexture;
        private Sprite backgroundSprite;
        private SpriteBatch spriteBatch;
-       private TextButton gameButton;
-       private TextButton optionButton;
-       private TextButton creditButton;
+       private TextButton FpsButton;
        private TextButton quitButton;
+       private TextButton languageButton;
        private Table table;
        private Stage stage;
        private Music music;
        private Music enter;
+       private boolean FpsShowing;
        private Preferences prefs;
        private FileHandle baseFileHandle;
        private I18NBundle strings;
        private String language;
+       
  
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public MenuScreen(final MyGame game){
+        public OptionScreen(final MyGame game){
                 //on garde une trace de game
                 this.game = game;
                 prefs = Gdx.app.getPreferences("userconf.prefs");
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-                //On lance la musique d'ambiance
-                music=Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
-                enter= Gdx.audio.newMusic(Gdx.files.internal("sound/enterbutton.mp3"));
-                             
+                FpsShowing = prefs.getBoolean("fps", true);
                 //choix du background
                 backgroundTexture = new Texture("menuBackground.jpg");
                 backgroundSprite =new Sprite(backgroundTexture);
@@ -66,10 +71,9 @@ public class MenuScreen implements Screen {
                 table.setSize(800,480);
                 
                 //definition des elements
-                gameButton=new TextButton(strings.get("play"),skin);
-                optionButton=new TextButton(strings.get("options"),skin);
-                creditButton=new TextButton(strings.get("credit"),skin);
-                quitButton=new TextButton(strings.get("quit"),skin);
+                FpsButton = this.displayFpsChoice();
+                languageButton=new TextButton(strings.get("otherlanguage"),skin);
+                quitButton=new TextButton(strings.get("back"),skin);
                 
                 this.addAllToTable();
                 
@@ -77,54 +81,70 @@ public class MenuScreen implements Screen {
                 stage.addActor(table);
                 
                 this.addAllButtonListener();
-     
+
+        }
+        public TextButton displayFpsChoice()
+        {
+            if(FpsShowing)
+                {
+                    return (new TextButton(strings.get("hideFPS"),skin));
+                }
+                else
+                {
+                    return (new TextButton(strings.get("showFPS"),skin));
+                }
         }
         public void addAllToTable()
         {
-            table.add(gameButton).width(200).height(40);
+            table.add(FpsButton).width(200).height(40);
             table.row();
-
-            table.add(optionButton).width(200).height(40).padTop(5);
+            table.add(languageButton).width(200).height(40).padTop(5);
             table.row();
-
-            table.add(creditButton).width(200).height(40).padTop(5);
-            table.row();
-
             table.add(quitButton).width(200).height(40).padTop(5);
             table.row();
         }
         public void addAllButtonListener()
         {
-            this.addGameButtonListener();
-            this.addOptionButtonListener();
-            this.addCreditButtonListener();
+            this.addFpsButtonListener();
+            this.addLanguageButtonListener();
             this.addQuitButtonListener();
         }
-        public void addGameButtonListener()
+        public void addFpsButtonListener()
         {
-            gameButton.addListener(new MenuScreenClickListener(){
+            FpsButton.addListener(new MenuScreenClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        enter.play();
-                        game.setScreen(game.gamescreen);
+                        FpsShowing = !(FpsShowing);       
+                        prefs.putBoolean("fps", FpsShowing);
+                        prefs.flush();
+                        if(FpsShowing)
+                        {
+                            FpsButton=new TextButton("Hide FPS",skin);
+                        }
+                        else
+                        {
+                            FpsButton=new TextButton("Show FPS",skin);
+                        }
+                        refreshAllScreens();
                     }
                 });
         }
-        public void addOptionButtonListener()
+        public void addLanguageButtonListener()
         {
-            optionButton.addListener(new MenuScreenClickListener(){
+            languageButton.addListener(new MenuScreenClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(game.optionscreen);
-                    }
-                });
-        }
-        public void addCreditButtonListener()
-        {
-            creditButton.addListener(new MenuScreenClickListener(){
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(game.creditscreen);
+                        if(language.equals(""))
+                        {
+                            language = "fr";
+                        }
+                        else
+                        {
+                            language = "";
+                        }
+                        prefs.putString("language", language);
+                        prefs.flush();
+                        refreshAllScreens();
                     }
                 });
         }
@@ -133,10 +153,18 @@ public class MenuScreen implements Screen {
             quitButton.addListener(new MenuScreenClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.exit(0);
+                        game.setScreen(game.menuscreen);
                     }
-                    
                 });
+        }
+        public void refreshAllScreens()
+        {
+            //The game has already prepared the others screens; creating them anew will refresh them.
+            game.creditscreen = new CreditScreen(game);
+            game.menuscreen = new MenuScreen(game);
+            game.gamescreen = new GameScreen(game);
+            game.optionscreen = new OptionScreen(game);
+            game.setScreen(game.optionscreen);
         }
         public void renderBG()
         {
@@ -144,51 +172,33 @@ public class MenuScreen implements Screen {
             backgroundSprite.draw(spriteBatch);
             spriteBatch.end();
         }
-        
         @Override
         public void render(float delta) {
             renderBG();
             stage.act(delta);
             stage.draw();
         }
-
        @Override
         public void resize(int width, int height) {
             
         }
-
-
-       @Override
+        @Override
         public void show() {
              // called when this screen is set as the screen with game.setScreen();
             Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
-            music.setLooping(true);
-            music.play();
         }
-
-
        @Override
         public void hide() {
-             // called when current screen changes from this to a different screen
-            
-            //On enlève cette musique d'ambiance (qui fait froid dans le dos) quand on change d'écran.
-            music.dispose();
+
         }
-
-
        @Override
         public void pause() {
         }
-
-
        @Override
         public void resume() {
         }
-
-
        @Override
         public void dispose() {
-                // never called automatically
-            music.dispose();
+
         }
  }
