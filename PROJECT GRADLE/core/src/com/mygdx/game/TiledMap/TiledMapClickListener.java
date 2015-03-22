@@ -1,6 +1,7 @@
 package com.mygdx.game.TiledMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,6 +35,7 @@ public class TiledMapClickListener extends ClickListener {
     public TiledMapClickListener(TiledMapActor actor) {
         //On garde l'acteur auquel on lie l'event (plus pratique)
         this.actor = actor;
+        this.setButton(-1); // pour indiquer au listener d'écouter TOUS les boutons souris (sinon par défaut seulement le gauche)
     }
 
     /**
@@ -46,20 +48,41 @@ public class TiledMapClickListener extends ClickListener {
     public void clicked(InputEvent event, float x, float y) {
         Gdx.app.log("Cellule cliquée",actor.cell + " has been clicked.");
         
-        if(actor.isEmpty()){
-            //On reset le son si besoin puis on le joue
-            if(buildingsound.isPlaying()) buildingsound.stop();
-            
-            buildingsound.play();
-            x= (int)actor.getX();
-            y = (int)actor.getY();
-            System.out.println("x="+x+" y="+y);
-            Cell newcell = new Cell();
-            //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
-            newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("jolof.png"),32,32)));
-            actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
-            actor.cell = newcell;
-            
+        
+        if(this.getPressedButton() == Input.Buttons.LEFT){
+            if(actor.isEmpty()){
+                //On reset le son si besoin puis on le joue
+                if(buildingsound.isPlaying()) buildingsound.stop();
+
+                buildingsound.play();
+                x= (int)actor.getX();
+                y = (int)actor.getY();
+                System.out.println("x="+x+" y="+y);
+                System.out.println("actor =" + actor.getWidth());
+                Cell newcell = new Cell();
+                //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
+                newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("defense.gif"),32,32)));
+                actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
+                actor.cell = newcell;
+
+            }
+        } else if(this.getPressedButton() == Input.Buttons.RIGHT){
+            if(actor.isEmpty()){
+                //On reset le son si besoin puis on le joue
+                if(buildingsound.isPlaying()) buildingsound.stop();
+
+                buildingsound.play();
+                x= (int)actor.getX();
+                y = (int)actor.getY();
+                System.out.println("x="+x+" y="+y);
+                System.out.println("actor =" + actor.getWidth());
+                Cell newcell = new Cell();
+                //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
+                newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("food.bmp"),32,32)));
+                actor.tiledLayer.setCell((int)(x/actor.getWidth()), (int)(y/actor.getHeight()), newcell);
+                actor.cell = newcell;
+
+            }
         }
     }
     /**
@@ -76,8 +99,6 @@ public class TiledMapClickListener extends ClickListener {
         x= (int)actor.getX();
         y = (int)actor.getY();
         Gdx.app.log("Coord mouseover","x="+x+" y="+y);
-        
-        
     }
     
     
