@@ -11,6 +11,7 @@ public class MyGame extends Game {
         CreditScreen creditscreen;
         GameOverScreen gameoverscreen;
         DayFinishedScreen dayfinishedscreen;
+        VictoryScreen victoryscreen;
 	@Override
 	public void create () {
             gamescreen = new GameScreen(this);
@@ -19,6 +20,7 @@ public class MyGame extends Game {
             creditscreen = new CreditScreen(this);
             gameoverscreen = new GameOverScreen(this);
             dayfinishedscreen = new DayFinishedScreen(this);
+            victoryscreen = new VictoryScreen(this);
             setScreen(menuscreen);
 	}
 }

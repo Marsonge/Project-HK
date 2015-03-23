@@ -52,7 +52,6 @@ public class DayFinishedScreen implements Screen {
                 scoring = Gdx.app.getPreferences("userscore.prefs");
                 prefs = Gdx.app.getPreferences("userconf.prefs");
                 day = scoring.getInteger("day",1); 
-                //choix du background
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));

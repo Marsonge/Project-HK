@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.I18NBundle;
 import java.util.Locale;
 
-public class GameOverScreen implements Screen {
+public class VictoryScreen implements Screen {
 
 
        private MyGame game;
@@ -28,7 +28,7 @@ public class GameOverScreen implements Screen {
        private Texture backgroundTexture;
        private Sprite backgroundSprite;
        private SpriteBatch spriteBatch;
-       private TextButton quitButton;
+       private TextButton continueButton;
        private Table table;
        private Stage stage;
        private Music music;
@@ -38,15 +38,21 @@ public class GameOverScreen implements Screen {
        private FileHandle baseFileHandle;
        private I18NBundle strings;
        private String language;
+       private Preferences scoring;
+       private int day;
+       private int nbOfVictories;
+
  
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public GameOverScreen(final MyGame game){
+        public VictoryScreen(final MyGame game)
+        {
                 //on garde une trace de game
                 this.game = game;
- 
+                scoring = Gdx.app.getPreferences("userscore.prefs");
                 prefs = Gdx.app.getPreferences("userconf.prefs");
+                nbOfVictories = scoring.getInteger("victory");
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
@@ -65,7 +71,7 @@ public class GameOverScreen implements Screen {
                 table.setSize(800,200);
                 
                 //definition des elements
-                quitButton=new TextButton(strings.get("quit"),skin);
+                continueButton=new TextButton(strings.get("return"),skin);
                 
                 this.addAllToTable();
                 // ATTENTION METTRE LES LISTENER APRES CETTE METHODE SINON CA FAIT DE LA MERDE
@@ -76,34 +82,44 @@ public class GameOverScreen implements Screen {
         }
         private void addAllToTable()
         {
-            table.add(quitButton).width(200).height(40).padTop(5);
+            table.add(continueButton).width(200).height(40).padTop(5);
             table.row();
         }
         private void addAllButtonListener()
         {  
-            this.addQuitButtonListener();
+            this.addContinueButtonListener();
         }
-        private void addQuitButtonListener()
+        private void addContinueButtonListener()
         {
-            quitButton.addListener(new MenuScreenClickListener(){
+            continueButton.addListener(new MenuScreenClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.exit(0);
+                        refreshAllScreens();
+                        game.setScreen(game.menuscreen);
                     }
                     
                 });
         }
+        private void refreshAllScreens()
+        {
+            //The game has already prepared the others screens; creating them anew will refresh them.
+            game.creditscreen = new CreditScreen(game);
+            game.menuscreen = new MenuScreen(game);
+            game.gamescreen = new GameScreen(game);
+            game.optionscreen = new OptionScreen(game);
+        }
         public void renderText()
         {
             spriteBatch.begin();
-            font.draw(spriteBatch, strings.get("youlost"), 200, 400);
-            font.draw(spriteBatch, strings.get("tip"), 200, 370);
-            font.draw(spriteBatch, strings.get("nexttime"), 200, 350);
+            font.draw(spriteBatch, strings.get("mistdisappear"), 200, 400);
+            font.draw(spriteBatch, strings.get("loweryourguard"), 200, 370);
+            font.draw(spriteBatch, strings.format("victorystreak",nbOfVictories), 200, 350);
             spriteBatch.end();
         }
         
         @Override
-        public void render(float delta) {
+        public void render(float delta) 
+        {
             
             stage.act(delta);
             stage.getBatch().begin();
@@ -115,13 +131,15 @@ public class GameOverScreen implements Screen {
         }
 
        @Override
-        public void resize(int width, int height) {
+        public void resize(int width, int height)
+        {
             
         }
 
 
        @Override
-        public void show() {
+        public void show()
+        {
              // called when this screen is set as the screen with game.setScreen();
             Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
             stage.getRoot().getColor().a = 0;
@@ -130,23 +148,27 @@ public class GameOverScreen implements Screen {
 
 
        @Override
-        public void hide() {
+        public void hide() 
+        {
              // called when current screen changes from this to a different screen
         }
 
 
        @Override
-        public void pause() {
+        public void pause()
+        {
         }
 
 
        @Override
-        public void resume() {
+        public void resume() 
+        {
         }
 
 
        @Override
-        public void dispose() {
+        public void dispose() 
+        {
                 // never called automatically
         }
  }

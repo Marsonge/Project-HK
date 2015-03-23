@@ -75,7 +75,7 @@ public class GameScreen implements Screen {
         spritePause.setX(w/2 - spritePause.getWidth()/2);
         spritePause.setY(h/2 - spritePause.getHeight()/2);
         FpsShowing = prefs.getBoolean("fps", true);
-        day = scoring.getInteger("day",1);
+        day = scoring.getInteger("day",0);
         map = new TmxMapLoader().load("map.tmx");
         
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -88,7 +88,7 @@ public class GameScreen implements Screen {
         food = 10;
         foodPerSecond = 0.1;
         defense = 5;
-        currentHour = 4 + day;
+        currentHour = 5 + day;
         
         batch.setProjectionMatrix(camera.combined);
         ressourceRender = new Timer();
@@ -108,15 +108,26 @@ public class GameScreen implements Screen {
                     currentHour = 0;
                     if(defense>300)
                     {
-                        day += 1;
-                        scoring.putInteger("day",day);
-                        scoring.flush();
-                        game.dayfinishedscreen = new DayFinishedScreen(game);
-                        game.setScreen(game.dayfinishedscreen);
+                        if(day==9)
+                        {
+                           scoring.putInteger("day", 0);
+                           scoring.putInteger("victory",scoring.getInteger("victory",0)+1);
+                           scoring.flush();
+                           game.victoryscreen = new VictoryScreen(game);
+                           game.setScreen(game.victoryscreen);
+                        }
+                        else
+                        {
+                            day += 1;
+                            scoring.putInteger("day",day);
+                            scoring.flush();
+                            game.dayfinishedscreen = new DayFinishedScreen(game);
+                            game.setScreen(game.dayfinishedscreen);
+                        }
                     }   
                     else
                     {
-                        scoring.putInteger("day", 1);
+                        scoring.putInteger("day", 0);
                         scoring.flush();
                         game.setScreen(game.gameoverscreen);
                     }
