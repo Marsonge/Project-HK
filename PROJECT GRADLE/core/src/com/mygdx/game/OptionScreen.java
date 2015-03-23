@@ -56,11 +56,8 @@ public class OptionScreen implements Screen{
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
                 FpsShowing = prefs.getBoolean("fps", true);
-                //choix du background
                 backgroundSprite = new Sprite(backgroundTexture);
-                
-                //changer de skin ici
-                
+                                
                 //definition du table et du stage
                 stage=new Stage();
                 table=new Table();
