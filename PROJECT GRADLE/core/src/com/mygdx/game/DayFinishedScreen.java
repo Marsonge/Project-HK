@@ -24,21 +24,21 @@ public class DayFinishedScreen implements Screen {
 
 
        private MyGame game;
-       private Skin skin;
-       private Texture backgroundTexture;
-       private Sprite backgroundSprite;
-       private SpriteBatch spriteBatch;
+       private Skin skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
+       private Texture backgroundTexture = new Texture("menuBackground.jpg");
+       private Sprite backgroundSprite = new Sprite(backgroundTexture);
+       private SpriteBatch spriteBatch = new SpriteBatch();
        private TextButton continueButton;
        private Table table;
        private Stage stage;
        private Music music;
        private Music enter;
-       private BitmapFont font;
-       private Preferences prefs;
-       private FileHandle baseFileHandle;
+       private BitmapFont font = new BitmapFont();
+       private Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
+       private FileHandle baseFileHandle = Gdx.files.internal("strings");
        private I18NBundle strings;
        private String language;
-       private Preferences scoring;
+       private Preferences scoring = Gdx.app.getPreferences("userscore.prefs");
        private int day;
 
  
@@ -49,29 +49,16 @@ public class DayFinishedScreen implements Screen {
         {
                 //on garde une trace de game
                 this.game = game;
-                scoring = Gdx.app.getPreferences("userscore.prefs");
-                prefs = Gdx.app.getPreferences("userconf.prefs");
                 day = scoring.getInteger("day",1); 
-                baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-                backgroundTexture = new Texture("menuBackground.jpg");
-                backgroundSprite =new Sprite(backgroundTexture);
-                spriteBatch = new SpriteBatch();
-                font = new BitmapFont();
                 font.setColor(Color.WHITE);
-                
-                //changer de skin ici
-                skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
-                
                 //definition du table et du stage
                 stage=new Stage();
                 table=new Table();
                 table.setSize(800,200);
-                
                 //definition des elements
                 continueButton=new TextButton(strings.get("go"),skin);
-                
                 this.addAllToTable();
                 // ATTENTION METTRE LES LISTENER APRES CETTE METHODE SINON CA FAIT DE LA MERDE
                 stage.addActor(table);
