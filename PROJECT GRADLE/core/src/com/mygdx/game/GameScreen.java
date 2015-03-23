@@ -16,10 +16,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.I18NBundle;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.badlogic.gdx.utils.TimeUtils.timeSinceMillis;
@@ -60,6 +64,7 @@ public class GameScreen implements Screen {
     private boolean FpsShowing;
     private final FileHandle baseFileHandle = Gdx.files.internal("strings");
     private I18NBundle strings;
+    private Stage buttonStage;
     private String language;
     private final Task clockTask = new Task(){
             @Override
@@ -102,7 +107,7 @@ public class GameScreen implements Screen {
                         addFood();
                     }
                 };
-    
+    private TextButton quitButton;
     public GameScreen(final MyGame game){
         this.game=game;
         language = prefs.getString("language","");
@@ -164,6 +169,8 @@ public class GameScreen implements Screen {
                 batch.begin();
                     spritePause.draw(batch);
                 batch.end();
+                buttonStage.act();
+                buttonStage.draw();
                 if (Gdx.input.isKeyJustPressed(Keys.SPACE)) { // Second appui pour retourner en jeu
                     this.resume();
                 }
@@ -171,6 +178,26 @@ public class GameScreen implements Screen {
         }
 
     }
+    private void addQuitButtonListener()
+        {
+            quitButton.addListener(new MenuScreenClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        refreshAllScreens();
+                        game.setScreen(game.menuscreen);
+                    }
+                    
+                });
+        }
+    private void refreshAllScreens()
+        {
+            //The game has already prepared the others screens; creating them anew will refresh them.
+            game.creditscreen = new CreditScreen(game);
+            game.menuscreen = new MenuScreen(game);
+            game.gamescreen = new GameScreen(game);
+            game.optionscreen = new OptionScreen(game);
+            game.setScreen(game.optionscreen);
+        }
 
     @Override
     public void resize(int i, int i1) {
@@ -210,6 +237,15 @@ public class GameScreen implements Screen {
         ambiance.pause();
         clock.instance().stop();
         ressourceRender.instance().stop();
+        buttonStage = new Stage();
+        Table table=new Table();
+        table.setSize(800,200);
+        quitButton=new TextButton(strings.get("menu"),new Skin( Gdx.files.internal( "ui/uiskin.json" )));
+        this.addQuitButtonListener();
+        table.add(quitButton).width(200).height(40).padTop(5);
+        table.row();
+        buttonStage.addActor(table);
+        Gdx.input.setInputProcessor(buttonStage);
     }
 
     @Override
@@ -219,6 +255,7 @@ public class GameScreen implements Screen {
         ambiance.play();
         clock.instance().start();
         ressourceRender.instance().start();
+        Gdx.input.setInputProcessor(stage);
     }
     
 
