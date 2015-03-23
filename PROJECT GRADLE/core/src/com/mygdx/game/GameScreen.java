@@ -17,6 +17,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.I18NBundle;
 import static com.badlogic.gdx.utils.TimeUtils.millis;
 import static com.badlogic.gdx.utils.TimeUtils.timeSinceMillis;
@@ -46,19 +49,23 @@ public class GameScreen implements Screen {
     private Sprite spritePause; // Sprite de l'icone pause
     
     private double food;
+    private int day;
     private double foodPerSecond;
     private int defense;
     private Timer ressourceRender;
     private Timer clock;
     private int currentHour;
     private Preferences prefs;
+    private Preferences scoring;
     private boolean FpsShowing;
     private FileHandle baseFileHandle;
     private I18NBundle strings;
     private String language;
-    public GameScreen(MyGame game){
+    
+    public GameScreen(final MyGame game){
         this.game=game;
         prefs = Gdx.app.getPreferences("userconf.prefs");
+        scoring = Gdx.app.getPreferences("userscore.prefs");
         baseFileHandle = Gdx.files.internal("strings");
         language = prefs.getString("language","");
         strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
@@ -68,6 +75,7 @@ public class GameScreen implements Screen {
         spritePause.setX(w/2 - spritePause.getWidth()/2);
         spritePause.setY(h/2 - spritePause.getHeight()/2);
         FpsShowing = prefs.getBoolean("fps", true);
+        day = scoring.getInteger("day",1);
         map = new TmxMapLoader().load("map.tmx");
         
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -80,7 +88,7 @@ public class GameScreen implements Screen {
         food = 10;
         foodPerSecond = 0.1;
         defense = 5;
-        currentHour = 5;
+        currentHour = 4 + day;
         
         batch.setProjectionMatrix(camera.combined);
         ressourceRender = new Timer();
@@ -96,10 +104,25 @@ public class GameScreen implements Screen {
         clock.schedule(new Task(){
             @Override
             public void run() {
-                if(currentHour > 24){
-                    currentHour = 5;
+                if(currentHour >= 24){
+                    currentHour = 0;
+                    if(defense>300)
+                    {
+                        day += 1;
+                        scoring.putInteger("day",day);
+                        scoring.flush();
+                        game.dayfinishedscreen = new DayFinishedScreen(game);
+                        game.setScreen(game.dayfinishedscreen);
+                    }   
+                    else
+                    {
+                        scoring.putInteger("day", 1);
+                        scoring.flush();
+                        game.setScreen(game.gameoverscreen);
+                    }
                 }
                 currentHour = currentHour +1;
+
             }
         },0,10);
         clock.instance().stop();
