@@ -80,7 +80,7 @@ public class MenuScreen implements Screen {
                 this.addAllButtonListener();
      
         }
-        public void addAllToTable()
+        private void addAllToTable()
         {
             table.add(gameButton).width(200).height(40);
             table.row();
@@ -94,14 +94,14 @@ public class MenuScreen implements Screen {
             table.add(quitButton).width(200).height(40).padTop(5);
             table.row();
         }
-        public void addAllButtonListener()
+        private void addAllButtonListener()
         {
             this.addGameButtonListener();
             this.addOptionButtonListener();
             this.addCreditButtonListener();
             this.addQuitButtonListener();
         }
-        public void addGameButtonListener()
+        private void addGameButtonListener()
         {
             gameButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -111,7 +111,7 @@ public class MenuScreen implements Screen {
                     }
                 });
         }
-        public void addOptionButtonListener()
+        private void addOptionButtonListener()
         {
             optionButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -120,7 +120,7 @@ public class MenuScreen implements Screen {
                     }
                 });
         }
-        public void addCreditButtonListener()
+        private void addCreditButtonListener()
         {
             creditButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -129,7 +129,7 @@ public class MenuScreen implements Screen {
                     }
                 });
         }
-        public void addQuitButtonListener()
+        private void addQuitButtonListener()
         {
             quitButton.addListener(new MenuScreenClickListener(){
                     @Override

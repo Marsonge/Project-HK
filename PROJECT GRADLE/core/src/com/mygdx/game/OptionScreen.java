@@ -84,7 +84,7 @@ public class OptionScreen implements Screen{
                 this.addAllButtonListener();
 
         }
-        public TextButton displayFpsChoice()
+        private TextButton displayFpsChoice()
         {
             if(FpsShowing)
                 {
@@ -95,7 +95,7 @@ public class OptionScreen implements Screen{
                     return (new TextButton(strings.get("showFPS"),skin));
                 }
         }
-        public void addAllToTable()
+        private void addAllToTable()
         {
             table.add(FpsButton).width(200).height(40);
             table.row();
@@ -104,13 +104,13 @@ public class OptionScreen implements Screen{
             table.add(quitButton).width(200).height(40).padTop(5);
             table.row();
         }
-        public void addAllButtonListener()
+        private void addAllButtonListener()
         {
             this.addFpsButtonListener();
             this.addLanguageButtonListener();
             this.addQuitButtonListener();
         }
-        public void addFpsButtonListener()
+        private void addFpsButtonListener()
         {
             FpsButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -130,7 +130,7 @@ public class OptionScreen implements Screen{
                     }
                 });
         }
-        public void addLanguageButtonListener()
+        private void addLanguageButtonListener()
         {
             languageButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -149,7 +149,7 @@ public class OptionScreen implements Screen{
                     }
                 });
         }
-        public void addQuitButtonListener()
+        private void addQuitButtonListener()
         {
             quitButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -158,7 +158,7 @@ public class OptionScreen implements Screen{
                     }
                 });
         }
-        public void refreshAllScreens()
+        private void refreshAllScreens()
         {
             //The game has already prepared the others screens; creating them anew will refresh them.
             game.creditscreen = new CreditScreen(game);

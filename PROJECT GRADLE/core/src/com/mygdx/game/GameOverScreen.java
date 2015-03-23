@@ -75,16 +75,16 @@ public class GameOverScreen implements Screen {
                 this.addAllButtonListener();
      
         }
-        public void addAllToTable()
+        private void addAllToTable()
         {
             table.add(quitButton).width(200).height(40).padTop(5);
             table.row();
         }
-        public void addAllButtonListener()
+        private void addAllButtonListener()
         {  
             this.addQuitButtonListener();
         }
-        public void addQuitButtonListener()
+        private void addQuitButtonListener()
         {
             quitButton.addListener(new MenuScreenClickListener(){
                     @Override

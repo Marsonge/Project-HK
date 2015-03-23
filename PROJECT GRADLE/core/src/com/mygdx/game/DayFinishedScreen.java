@@ -80,16 +80,16 @@ public class DayFinishedScreen implements Screen {
                 this.addAllButtonListener();
      
         }
-        public void addAllToTable()
+        private void addAllToTable()
         {
             table.add(continueButton).width(200).height(40).padTop(5);
             table.row();
         }
-        public void addAllButtonListener()
+        private void addAllButtonListener()
         {  
             this.addContinueButtonListener();
         }
-        public void addContinueButtonListener()
+        private void addContinueButtonListener()
         {
             continueButton.addListener(new MenuScreenClickListener(){
                     @Override
@@ -100,7 +100,7 @@ public class DayFinishedScreen implements Screen {
                     
                 });
         }
-        public void refreshAllScreens()
+        private void refreshAllScreens()
         {
             //The game has already prepared the others screens; creating them anew will refresh them.
             game.creditscreen = new CreditScreen(game);
