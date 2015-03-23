@@ -28,10 +28,10 @@ import java.util.Locale;
 public class OptionScreen implements Screen{
     
        private MyGame game;
-       private Skin skin;
-       private Texture backgroundTexture;
+       private final Skin skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
+       private final Texture backgroundTexture = new Texture("menuBackground.jpg");
        private Sprite backgroundSprite;
-       private SpriteBatch spriteBatch;
+       private final SpriteBatch spriteBatch = new SpriteBatch();
        private TextButton FpsButton;
        private TextButton quitButton;
        private TextButton languageButton;
@@ -40,8 +40,8 @@ public class OptionScreen implements Screen{
        private Music music;
        private Music enter;
        private boolean FpsShowing;
-       private Preferences prefs;
-       private FileHandle baseFileHandle;
+       private final Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
+       private final FileHandle baseFileHandle = Gdx.files.internal("strings");
        private I18NBundle strings;
        private String language;
        
@@ -53,18 +53,13 @@ public class OptionScreen implements Screen{
         {
                 //on garde une trace de game
                 this.game = game;
-                prefs = Gdx.app.getPreferences("userconf.prefs");
-                baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
                 FpsShowing = prefs.getBoolean("fps", true);
                 //choix du background
-                backgroundTexture = new Texture("menuBackground.jpg");
-                backgroundSprite =new Sprite(backgroundTexture);
-                spriteBatch = new SpriteBatch();
+                backgroundSprite = new Sprite(backgroundTexture);
                 
                 //changer de skin ici
-                skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
                 
                 //definition du table et du stage
                 stage=new Stage();

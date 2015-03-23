@@ -31,10 +31,10 @@ public class MenuScreen implements Screen {
        private TextButton quitButton;
        private Table table;
        private Stage stage;
-       private Music music;
-       private Music enter;
-       private Preferences prefs;
-       private FileHandle baseFileHandle;
+       private final Music music = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
+       private final Music enter = Gdx.audio.newMusic(Gdx.files.internal("sound/enterbutton.mp3"));
+       private final Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
+       private final FileHandle baseFileHandle = Gdx.files.internal("strings");
        private I18NBundle strings;
        private String language;
  
@@ -45,13 +45,8 @@ public class MenuScreen implements Screen {
         {
                 //on garde une trace de game
                 this.game = game;
-                prefs = Gdx.app.getPreferences("userconf.prefs");
-                baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-                //On lance la musique d'ambiance
-                music=Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
-                enter= Gdx.audio.newMusic(Gdx.files.internal("sound/enterbutton.mp3"));
                              
                 //choix du background
                 backgroundTexture = new Texture("menuBackground.jpg");

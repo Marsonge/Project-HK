@@ -33,7 +33,7 @@ import java.util.Locale;
  * @author Fabien
  */
 public class GameScreen implements Screen {
-    private TiledMap map;
+    private final TiledMap map = new TmxMapLoader().load("map.tmx");
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
     private MyGame game;
@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
         RUN
     };
     private State state = State.RUN; // initialisée à RUN pour que le jeu se lance bien
-    private Sprite spritePause; // Sprite de l'icone pause
+    private final Sprite spritePause = new Sprite(new Texture("pause.png"));
     
     private double food;
     private int day;
@@ -55,58 +55,18 @@ public class GameScreen implements Screen {
     private Timer ressourceRender;
     private Timer clock;
     private int currentHour;
-    private Preferences prefs;
-    private Preferences scoring;
+    private final Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
+    private final Preferences scoring = Gdx.app.getPreferences("userscore.prefs");
     private boolean FpsShowing;
-    private FileHandle baseFileHandle;
+    private final FileHandle baseFileHandle = Gdx.files.internal("strings");
     private I18NBundle strings;
     private String language;
-    
-    public GameScreen(final MyGame game){
-        this.game=game;
-        prefs = Gdx.app.getPreferences("userconf.prefs");
-        scoring = Gdx.app.getPreferences("userscore.prefs");
-        baseFileHandle = Gdx.files.internal("strings");
-        language = prefs.getString("language","");
-        strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        spritePause=new Sprite(new Texture("pause.png")); // J'initialise le sprite ici avec l'image
-        spritePause.setX(w/2 - spritePause.getWidth()/2);
-        spritePause.setY(h/2 - spritePause.getHeight()/2);
-        FpsShowing = prefs.getBoolean("fps", true);
-        day = scoring.getInteger("day",0);
-        map = new TmxMapLoader().load("map.tmx");
-        
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-        
-        camera = new OrthographicCamera(w,h);
-        camera.setToOrtho(false);
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        stage = new TiledMapStage(map, this);
-        food = 10;
-        foodPerSecond = 0.1;
-        defense = 5;
-        currentHour = 5 + day;
-        
-        batch.setProjectionMatrix(camera.combined);
-        ressourceRender = new Timer();
-        ressourceRender.schedule(new Task(){
-                    @Override
-                    public void run() {
-                        addFood();
-                    }
-                }, 0, 1);
-        ressourceRender.instance().stop();
-        
-        clock = new Timer();
-        clock.schedule(new Task(){
+    private final Task clockTask = new Task(){
             @Override
             public void run() {
                 if(currentHour >= 24){
                     currentHour = 0;
-                    if(defense>300)
+                    if(defense>=300)
                     {
                         if(day==9)
                         {
@@ -135,7 +95,40 @@ public class GameScreen implements Screen {
                 currentHour = currentHour +1;
 
             }
-        },0,10);
+        };
+    private final Task resourceTask = new Task(){
+                    @Override
+                    public void run() {
+                        addFood();
+                    }
+                };
+    
+    public GameScreen(final MyGame game){
+        this.game=game;
+        language = prefs.getString("language","");
+        strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        spritePause.setX(w/2 - spritePause.getWidth()/2);
+        spritePause.setY(h/2 - spritePause.getHeight()/2);
+        FpsShowing = prefs.getBoolean("fps", true);
+        day = scoring.getInteger("day",0);        
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+        camera = new OrthographicCamera(w,h);
+        camera.setToOrtho(false);
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        stage = new TiledMapStage(map, this);
+        food = 10;
+        foodPerSecond = 0.1;
+        defense = 5;
+        currentHour = 5 + day;
+        batch.setProjectionMatrix(camera.combined);
+        ressourceRender = new Timer();
+        ressourceRender.schedule(resourceTask, 0, 1);
+        ressourceRender.instance().stop();
+        clock = new Timer();
+        clock.schedule(clockTask,0,10);
         clock.instance().stop();
     }
 

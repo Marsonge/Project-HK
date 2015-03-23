@@ -24,22 +24,21 @@ public class VictoryScreen implements Screen {
 
 
        private MyGame game;
-       private Skin skin;
-       private Texture backgroundTexture;
+       private final Skin skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
+       private final Texture backgroundTexture = new Texture("menuBackground.jpg");
        private Sprite backgroundSprite;
-       private SpriteBatch spriteBatch;
+       private final SpriteBatch spriteBatch  = new SpriteBatch();
        private TextButton continueButton;
        private Table table;
        private Stage stage;
        private Music music;
        private Music enter;
-       private BitmapFont font;
-       private Preferences prefs;
+       private final BitmapFont font = new BitmapFont();
+       private final Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
        private FileHandle baseFileHandle;
        private I18NBundle strings;
        private String language;
-       private Preferences scoring;
-       private int day;
+       private final Preferences scoring = Gdx.app.getPreferences("userscore.prefs");;
        private int nbOfVictories;
 
  
@@ -50,21 +49,13 @@ public class VictoryScreen implements Screen {
         {
                 //on garde une trace de game
                 this.game = game;
-                scoring = Gdx.app.getPreferences("userscore.prefs");
-                prefs = Gdx.app.getPreferences("userconf.prefs");
                 nbOfVictories = scoring.getInteger("victory");
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
-                backgroundTexture = new Texture("menuBackground.jpg");
                 backgroundSprite =new Sprite(backgroundTexture);
-                spriteBatch = new SpriteBatch();
-                font = new BitmapFont();
                 font.setColor(Color.WHITE);
-                
-                //changer de skin ici
-                skin = new Skin( Gdx.files.internal( "ui/uiskin.json" ));
-                
+                  
                 //definition du table et du stage
                 stage=new Stage();
                 table=new Table();
