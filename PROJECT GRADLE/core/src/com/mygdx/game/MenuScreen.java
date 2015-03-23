@@ -29,6 +29,7 @@ public class MenuScreen implements Screen {
        private TextButton optionButton;
        private TextButton creditButton;
        private TextButton quitButton;
+       private TextButton tutorialButton;
        private Table table;
        private Stage stage;
        private final Music music = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
@@ -66,6 +67,7 @@ public class MenuScreen implements Screen {
                 optionButton=new TextButton(strings.get("options"),skin);
                 creditButton=new TextButton(strings.get("credit"),skin);
                 quitButton=new TextButton(strings.get("quit"),skin);
+                tutorialButton=new TextButton(strings.get("tutorial"),skin);
                 
                 this.addAllToTable();
                 
@@ -82,7 +84,9 @@ public class MenuScreen implements Screen {
 
             table.add(optionButton).width(200).height(40).padTop(5);
             table.row();
-
+            table.add(tutorialButton).width(200).height(40).padTop(5);
+            table.row();
+            
             table.add(creditButton).width(200).height(40).padTop(5);
             table.row();
 
@@ -93,6 +97,7 @@ public class MenuScreen implements Screen {
         {
             this.addGameButtonListener();
             this.addOptionButtonListener();
+            this.addTutorialButtonListener();
             this.addCreditButtonListener();
             this.addQuitButtonListener();
         }
@@ -112,6 +117,15 @@ public class MenuScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         game.setScreen(game.optionscreen);
+                    }
+                });
+        }
+        private void addTutorialButtonListener()
+        {
+            tutorialButton.addListener(new MenuScreenClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(game.tutorialscreen);
                     }
                 });
         }
