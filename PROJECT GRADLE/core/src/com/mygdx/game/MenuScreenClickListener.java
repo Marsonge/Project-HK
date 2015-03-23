@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
  *
  * @author Fabien
- * @deprecated Do we ever use this?
  */
 public class MenuScreenClickListener extends ClickListener{
     
