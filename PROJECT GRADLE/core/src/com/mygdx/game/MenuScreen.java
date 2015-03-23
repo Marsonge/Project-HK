@@ -41,7 +41,8 @@ public class MenuScreen implements Screen {
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public MenuScreen(final MyGame game){
+        public MenuScreen(final MyGame game)
+        {
                 //on garde une trace de game
                 this.game = game;
                 prefs = Gdx.app.getPreferences("userconf.prefs");

@@ -49,7 +49,8 @@ public class OptionScreen implements Screen{
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public OptionScreen(final MyGame game){
+        public OptionScreen(final MyGame game)
+        {
                 //on garde une trace de game
                 this.game = game;
                 prefs = Gdx.app.getPreferences("userconf.prefs");
@@ -173,32 +174,39 @@ public class OptionScreen implements Screen{
             spriteBatch.end();
         }
         @Override
-        public void render(float delta) {
+        public void render(float delta) 
+        {
             renderBG();
             stage.act(delta);
             stage.draw();
         }
        @Override
-        public void resize(int width, int height) {
+        public void resize(int width, int height) 
+        {
             
         }
         @Override
-        public void show() {
+        public void show() 
+        {
              // called when this screen is set as the screen with game.setScreen();
             Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
         }
        @Override
-        public void hide() {
+        public void hide() 
+        {
 
         }
        @Override
-        public void pause() {
+        public void pause() 
+        {
         }
        @Override
-        public void resume() {
+        public void resume() 
+        {
         }
        @Override
-        public void dispose() {
+        public void dispose()
+        {
 
         }
  }

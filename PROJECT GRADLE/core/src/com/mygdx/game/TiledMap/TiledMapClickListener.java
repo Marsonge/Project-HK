@@ -61,7 +61,6 @@ public class TiledMapClickListener extends ClickListener {
                     System.out.println("x="+x+" y="+y);
                     System.out.println("actor =" + actor.getWidth());
                     Cell newcell = new Cell();
-                    //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
                     newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("defense.gif"),32,32)));
                     actor.stage.gamescreen.removeFood(5);
                     actor.stage.gamescreen.addDefense(3);
@@ -82,7 +81,6 @@ public class TiledMapClickListener extends ClickListener {
                     System.out.println("x="+x+" y="+y);
                     System.out.println("actor =" + actor.getWidth());
                     Cell newcell = new Cell();
-                    //On ajoute une Tile perso à la Cell (ici avec la texture jolof...)
                     newcell.setTile(new StaticTiledMapTile(new TextureRegion(new Texture("food.bmp"),32,32)));
                     actor.stage.gamescreen.removeFood(3);
                     actor.stage.gamescreen.addFoodPerSecond(0.2);
@@ -97,11 +95,6 @@ public class TiledMapClickListener extends ClickListener {
     }
     /**
      * Met à jour l'activetile du stage pour être celui dans lequel la souris entre
-     * @param event
-     * @param x
-     * @param y
-     * @param pointer
-     * @param fromActor 
      */
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {

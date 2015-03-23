@@ -45,13 +45,14 @@ public class DayFinishedScreen implements Screen {
 // /!\ la déclaration de l'input processor DOIT impérativement être faite lors de l'appel de show() ! Sinon, ça marche une première fois mais si on retourne sur le menu,
 // l'input processor ne sera pas actualisé => BUGS EN MASSE
 
-        public DayFinishedScreen(final MyGame game){
+        public DayFinishedScreen(final MyGame game)
+        {
                 //on garde une trace de game
                 this.game = game;
                 scoring = Gdx.app.getPreferences("userscore.prefs");
+                prefs = Gdx.app.getPreferences("userconf.prefs");
                 day = scoring.getInteger("day",1); 
                 //choix du background
-                prefs = Gdx.app.getPreferences("userconf.prefs");
                 baseFileHandle = Gdx.files.internal("strings");
                 language = prefs.getString("language","");
                 strings = I18NBundle.createBundle(baseFileHandle, new Locale(language));
@@ -124,7 +125,8 @@ public class DayFinishedScreen implements Screen {
         }
         
         @Override
-        public void render(float delta) {
+        public void render(float delta) 
+        {
             
             stage.act(delta);
             stage.getBatch().begin();
@@ -136,13 +138,15 @@ public class DayFinishedScreen implements Screen {
         }
 
        @Override
-        public void resize(int width, int height) {
+        public void resize(int width, int height)
+        {
             
         }
 
 
        @Override
-        public void show() {
+        public void show()
+        {
              // called when this screen is set as the screen with game.setScreen();
             Gdx.input.setInputProcessor(stage); // définition de l'input processor à faire ici (voir commentaire l.33)
             stage.getRoot().getColor().a = 0;
@@ -151,23 +155,27 @@ public class DayFinishedScreen implements Screen {
 
 
        @Override
-        public void hide() {
+        public void hide() 
+        {
              // called when current screen changes from this to a different screen
         }
 
 
        @Override
-        public void pause() {
+        public void pause()
+        {
         }
 
 
        @Override
-        public void resume() {
+        public void resume() 
+        {
         }
 
 
        @Override
-        public void dispose() {
+        public void dispose() 
+        {
                 // never called automatically
         }
  }
