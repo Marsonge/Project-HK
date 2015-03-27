@@ -31,7 +31,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import java.util.Locale;
 
-
 /**
  *
  * @author Fabien
@@ -59,6 +58,8 @@ public class GameScreen implements Screen {
     private Timer ressourceRender;
     private Timer clock;
     private int currentHour;
+    private int attack = 0;
+    
     private final Preferences prefs = Gdx.app.getPreferences("userconf.prefs");
     private final Preferences scoring = Gdx.app.getPreferences("userscore.prefs");
     private boolean FpsShowing;
@@ -71,34 +72,10 @@ public class GameScreen implements Screen {
             public void run() {
                 if(currentHour >= 24){
                     currentHour = 0;
-                    if(defense>=300)
-                    {
-                        if(day==9)
-                        {
-                           scoring.putInteger("day", 0);
-                           scoring.putInteger("victory",scoring.getInteger("victory",0)+1);
-                           scoring.flush();
-                           game.victoryscreen = new VictoryScreen(game);
-                           game.setScreen(game.victoryscreen);
-                        }
-                        else
-                        {
-                            day += 1;
-                            scoring.putInteger("day",day);
-                            scoring.flush();
-                            game.dayfinishedscreen = new DayFinishedScreen(game);
-                            game.setScreen(game.dayfinishedscreen);
-                        }
-                    }   
-                    else
-                    {
-                        scoring.putInteger("day", 0);
-                        scoring.flush();
-                        game.setScreen(game.gameoverscreen);
-                    }
+                    endOfDay();
+                    processNightAttack();
                 }
                 currentHour = currentHour +1;
-
             }
         };
     private final Task resourceTask = new Task(){
@@ -108,6 +85,8 @@ public class GameScreen implements Screen {
                     }
                 };
     private TextButton quitButton;
+    private TextButton endOfDayButton;
+    
     public GameScreen(final MyGame game){
         this.game=game;
         language = prefs.getString("language","");
@@ -178,6 +157,7 @@ public class GameScreen implements Screen {
         }
 
     }
+    
     private void addQuitButtonListener()
         {
             quitButton.addListener(new MenuScreenClickListener(){
@@ -185,6 +165,17 @@ public class GameScreen implements Screen {
                     public void clicked(InputEvent event, float x, float y) {
                         refreshAllScreens();
                         game.setScreen(game.menuscreen);
+                    }
+                    
+                });
+        }
+    private void addEndOfDayButtonListener()
+        {
+            endOfDayButton.addListener(new MenuScreenClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        endOfDay();
+                        processNightAttack();
                     }
                     
                 });
@@ -199,6 +190,37 @@ public class GameScreen implements Screen {
             game.setScreen(game.optionscreen);
         }
 
+    private void endOfDay(){
+        day += 1;
+        attack = day*35;
+        scoring.putInteger("day",day);
+        scoring.flush();
+        game.dayfinishedscreen = new DayFinishedScreen(game);
+        game.setScreen(game.dayfinishedscreen);
+    }
+    
+    private void processNightAttack(){
+        attack = day*35;
+        if(defense < attack){
+            defeat();
+        } else if (day == 9){
+            victory();
+        }
+    }
+    
+    private void defeat(){
+        scoring.putInteger("day", 0);
+        scoring.flush();
+        game.setScreen(game.gameoverscreen);
+    }
+    
+    private void victory(){
+        scoring.putInteger("day", 0);
+        scoring.putInteger("victory",scoring.getInteger("victory",0)+1);
+        scoring.flush();
+        game.victoryscreen = new VictoryScreen(game);
+        game.setScreen(game.victoryscreen);
+    }
     @Override
     public void resize(int i, int i1) {
         // FONCTIONNE PAAAAAAAAAS
@@ -241,8 +263,11 @@ public class GameScreen implements Screen {
         Table table=new Table();
         table.setSize(800,200);
         quitButton=new TextButton(strings.get("menu"),new Skin( Gdx.files.internal( "ui/uiskin.json" )));
+        endOfDayButton=new TextButton(strings.get("end"),new Skin( Gdx.files.internal( "ui/uiskin.json" )));
         this.addQuitButtonListener();
-        table.add(quitButton).width(200).height(40).padTop(5);
+        this.addEndOfDayButtonListener();
+        table.add(quitButton).width(130).height(40).padTop(5);
+        table.add(endOfDayButton).width(130).height(40).padTop(5);
         table.row();
         buttonStage.addActor(table);
         Gdx.input.setInputProcessor(buttonStage);
