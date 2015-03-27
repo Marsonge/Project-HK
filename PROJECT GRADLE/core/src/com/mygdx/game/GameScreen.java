@@ -18,15 +18,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.I18NBundle;
-import static com.badlogic.gdx.utils.TimeUtils.millis;
-import static com.badlogic.gdx.utils.TimeUtils.timeSinceMillis;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import java.util.Locale;
@@ -192,7 +187,6 @@ public class GameScreen implements Screen {
 
     private void endOfDay(){
         day += 1;
-        attack = day*35;
         scoring.putInteger("day",day);
         scoring.flush();
         game.dayfinishedscreen = new DayFinishedScreen(game);
@@ -307,7 +301,9 @@ public class GameScreen implements Screen {
     }
     
     public void addFood(){
-        food = food + foodPerSecond;
+        if(food<200){
+            food = food + foodPerSecond;
+        }
     }
     
     public void addDefense(int quantity){
